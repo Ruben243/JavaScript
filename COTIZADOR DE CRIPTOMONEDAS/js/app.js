@@ -1,4 +1,4 @@
-const cotizador = new API('89cde741a9d07d14c875b02f2e16bd72bfeb2119ae8d45bdad7312e59a8472ef');//instancia de API que manda la apikey por parametro
+const cotizador = new API('AQUI TU APIKEY');//instancia de API que manda la apikey por parametro
 const ui = new Interfaz();//instancia de interfaz
 
 
