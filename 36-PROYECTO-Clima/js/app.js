@@ -104,7 +104,7 @@ function mostrarClima(datos) {
     temperaturaMax.classList.add('text-xl');
 
     const temperaturaMin = document.createElement('p');
-    temperaturaMin.innerHTML = `Temperatura Minima: ${tempMax} &#8451`;
+    temperaturaMin.innerHTML = `Temperatura Minima: ${tempMin} &#8451`;
     temperaturaMin.classList.add('text-xl');
 
 
