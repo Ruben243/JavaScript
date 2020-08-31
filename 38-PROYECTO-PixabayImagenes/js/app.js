@@ -49,7 +49,7 @@ function mostrarAlerta(mensaje) {
 
 async function buscarImagenes() {
     const termino = document.querySelector('#termino').value;
-    const key = '18114550-5a097c4d3949564102c7e92db';
+    const key = '';
     const url = `https://pixabay.com/api/?key=${key}&q=${termino}&per_page=${registrosPorPagina}&page=${paginaActual}`;
 
 
