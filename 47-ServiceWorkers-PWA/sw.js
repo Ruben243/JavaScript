@@ -39,10 +39,18 @@ self.addEventListener('activate', e => {
 // Evento fetch para descargar archivos estatico
 self.addEventListener('fetch', e => {
     console.log('Fetch... ', e);
-    e.respondWith(e.request)
-        .then(respuestaCache => {
-            return respuestaCache
-        })
-        //no funciona esto,por lo demas va perfecta
-        .catch(() => caches.open(nombreCache)).then(() => caches.match('/error.html'))
+    // CODELAB: Add fetch event handler here.
+    if (e.request.mode !== 'navigate') {
+        // Not a page navigation, bail.
+        return;
+    }
+    e.respondWith(
+        fetch(e.request)
+            .catch(async () => {
+                const cache = await caches.open(nombreCache);
+                return cache.match('/error.html');
+            }));
+
+
+
 });
