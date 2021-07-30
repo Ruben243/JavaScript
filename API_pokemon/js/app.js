@@ -1,8 +1,7 @@
 const ui = new UI();
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    ui.listarPokemon();
+ ui.listarPokemon();
 });
 
 const boton = document.querySelector('.boton');
