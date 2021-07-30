@@ -17,6 +17,11 @@ class UI {
 
         })
     }
+    /**
+     * Funcion que recibe los pokemon en json,recorre los datos y los inyecta en el html.Tambien llama a una funcion para seleccionar un pokemon individualmente.
+     * @param {json} pokemon
+     * @see pokemonCLick() 
+     */
     mostrarPokemon(pokemon) {
         const content = document.querySelector('#content');
         let html = ``;
@@ -32,6 +37,10 @@ class UI {
         this.pokemonCLick()
     }
   
+    /**
+     * Funcion que establece un evento de click en los parrafos y llama a la funcion de filtrado
+     * @see filtrarPokemon()
+     */
     pokemonCLick() {
         const parrafos = document.getElementsByTagName('p');
         for (let i = 0; i < parrafos.length; i++) {
@@ -44,6 +53,14 @@ class UI {
 
     }
 
+    /**
+     * Funcion que filtra los resultados por un parametro string recibido de otras funciones.Dependiendo del valor del parametro se llama a una u otra funcion
+     * @param {string} nombre parametro recibido de otras funciones
+     * @returns 
+     * @see listarPokemon()
+     * @see pokeIndividual()
+     * @see noPokemon()
+     */
     filtrarPokemon(nombre = '') {
         if (nombre != '') {
             this.api.cargarPokemon(nombre).then(data => {
@@ -72,6 +89,11 @@ class UI {
         });
     }
 
+    /**
+     * Funcion que muestra el pokemon filtrado en el html y llama a la funcion para volver atras
+     * @param {string} pokemon parametro recibido de otras funciones
+     * @see volver()
+     */
     pokemonIndividual(pokemon) {
         const { name, height, id, types, abilities } = pokemon.dataJson;
         const content = document.querySelector('#content');
@@ -93,6 +115,10 @@ class UI {
 
     }
 
+    /**
+     * Funcion que muestra un mensaje de error cuando no existe el pokemon.
+     * @param {string} nombrePokemon parametro recibido de otras funciones
+     */
     noPokemon(nombrePokemon) {
         let html = ``;
         html += `
@@ -101,6 +127,9 @@ class UI {
         </div>`
         content.innerHTML = html;
     }
+    /**
+     * funcion que vulve atras
+     */
     volver() {
         const volver = document.getElementById('volver');
         volver.addEventListener('click', () => {
