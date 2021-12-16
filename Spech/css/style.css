@@ -1,0 +1,43 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    background-color: cornflowerblue;
+
+}
+
+main{
+    border:1px solid black;
+    width: 50%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height:40vh;
+    background-color: whitesmoke;
+    
+}
+h1{
+    font-weight: bold;
+  
+}
+#mensaje{
+    color: cornsilk;
+    font-weight: bold;
+    background-color: darkblue;
+    font-size: 2rem;
+    margin: 1%;
+}
+
+#mensajeText{
+    min-height: 20vh;
+    background-color: black;
+    color: chartreuse;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-bottom: 1%;
+}
+
+#boton{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+}
