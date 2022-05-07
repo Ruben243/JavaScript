@@ -16,3 +16,14 @@ const cantidadNombres=nombres.reduce((contadorNombre,nombre)=>{
 },{});
 
 console.log(cantidadNombres);//{ Ruben: 2, Anna: 1, Pedroche: 1, Marbelys: 1, Marlene: 2, Yasmin: 1 }
+
+
+
+const hero = ["Thor", "Ironman", "Thor", "hulk"];
+
+
+const vengadores = hero.reduce((vengadores, hero) => (
+    vengadores[hero] = vengadores[hero] + 1 || 1, vengadores
+), {});
+
+console.log(vengadores);//{ Thor: 2, Ironman: 1, hulk: 1 }
