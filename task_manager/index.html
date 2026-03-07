@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Kanban</title>
+    <!-- Google Fonts for modern sans-serif typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-container">
+            <h1>Nexus <span>Tasks</span></h1>
+            <div class="header-actions">
+                <button id="btn-add-task" class="btn btn-primary">+ Nueva Tarea</button>
+                <button id="btn-clear-board" class="btn btn-danger">Limpiar Tablero</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="board">
+        <!-- Columna Pendiente -->
+        <div class="column" id="col-todo" data-status="todo">
+            <div class="column-header">
+                <h2>Pendiente</h2>
+                <span class="task-count">0</span>
+            </div>
+            <div class="task-list" id="list-todo">
+                <!-- Tareas irán aquí -->
+            </div>
+        </div>
+
+        <!-- Columna En Progreso -->
+        <div class="column" id="col-inprogress" data-status="inprogress">
+            <div class="column-header">
+                <h2>En progreso</h2>
+                <span class="task-count">0</span>
+            </div>
+            <div class="task-list" id="list-inprogress">
+                <!-- Tareas irán aquí -->
+            </div>
+        </div>
+
+        <!-- Columna Hecho -->
+        <div class="column" id="col-done" data-status="done">
+            <div class="column-header">
+                <h2>Hecho</h2>
+                <span class="task-count">0</span>
+            </div>
+            <div class="task-list" id="list-done">
+                <!-- Tareas irán aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Popup for Create / Edit Task -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nueva Tarea</h3>
+                <span class="close-btn" id="btn-close-modal">&times;</span>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                
+                <div class="form-group">
+                    <label for="task-title">Título</label>
+                    <input type="text" id="task-title" required placeholder="Escribe el título de la tarea..." autocomplete="off">
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-desc">Descripción</label>
+                    <textarea id="task-desc" rows="4" placeholder="Añade detalles de la tarea..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-status">Estado</label>
+                    <select id="task-status">
+                        <option value="todo">Pendiente</option>
+                        <option value="inprogress">En progreso</option>
+                        <option value="done">Hecho</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-delete-task" class="btn btn-danger hidden">Eliminar</button>
+                    <div class="action-right">
+                        <button type="button" id="btn-cancel" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Background Decoration -->
+    <div class="bg-blur shape-1"></div>
+    <div class="bg-blur shape-2"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
