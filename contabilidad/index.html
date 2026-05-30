@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FacturaPro — Generador de Facturas PDF</title>
+  <meta name="description"
+        content="Genera facturas profesionales en PDF de forma rápida y sencilla. Sin servidor, todo en tu navegador." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+  <!-- jsPDF + AutoTable -->
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ─── HEADER ─────────────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 32 32" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="url(#brandGrad)" />
+            <path d="M9 8h10l4 4v12H9V8z" fill="white" opacity=".9" />
+            <path d="M19 8l4 4h-4V8z" fill="white" opacity=".5" />
+            <path d="M12 14h8M12 17h8M12 20h5" stroke="#1e3a5f"
+                  stroke-width="1.5" stroke-linecap="round" />
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32"
+                              gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#1e3a5f" />
+                <stop offset="100%" stop-color="#2d5a8e" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">FacturaPro</span>
+          <span class="brand-tagline">Generador de Facturas</span>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <span class="nav-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+          Sin servidor · 100% privado
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── MAIN ──────────────────────────────────────────────── -->
+  <main class="app-main">
+    <div class="layout-grid">
+
+      <!-- LEFT: FORM PANEL -->
+      <section class="panel form-panel" aria-label="Formulario de factura">
+        <form id="invoiceForm" novalidate>
+
+          <!-- ── NÚMERO DE FACTURA ──────────────────────────── -->
+          <div class="panel-section">
+            <h2 class="section-title">
+              <span class="section-icon">🧾</span>
+              Información de la Factura
+            </h2>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="invoiceNumber" class="field-label">Nº Factura <span
+                        class="required">*</span></label>
+                <input type="text" id="invoiceNumber" name="invoiceNumber"
+                       class="field-input" placeholder="FAC-2024-001"
+                       required />
+                <span class="field-error" id="err-invoiceNumber"></span>
+              </div>
+              <div class="field-group">
+                <label for="invoiceDate" class="field-label">Fecha <span
+                        class="required">*</span></label>
+                <input type="date" id="invoiceDate" name="invoiceDate"
+                       class="field-input" required />
+                <span class="field-error" id="err-invoiceDate"></span>
+              </div>
+            </div>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="dueDate" class="field-label">Fecha de
+                  Vencimiento</label>
+                <input type="date" id="dueDate" name="dueDate"
+                       class="field-input" />
+              </div>
+              <div class="field-group">
+                <label for="currency" class="field-label">Moneda</label>
+                <select id="currency" name="currency"
+                        class="field-input field-select">
+                  <option value="EUR">€ Euro (EUR)</option>
+                  <option value="USD">$ Dólar (USD)</option>
+                  <option value="GBP">£ Libra (GBP)</option>
+                  <option value="MXN">$ Peso MX (MXN)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DATOS DEL EMISOR ──────────────────────────── -->
+          <div class="panel-section">
+            <h2 class="section-title">
+              <span class="section-icon">🏢</span>
+              Datos del Emisor
+            </h2>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="senderName" class="field-label">Empresa / Nombre
+                  <span class="required">*</span></label>
+                <input type="text" id="senderName" name="senderName"
+                       class="field-input" placeholder="Mi Empresa, S.L."
+                       required />
+                <span class="field-error" id="err-senderName"></span>
+              </div>
+            </div>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="senderCif" class="field-label">CIF / NIF</label>
+                <input type="text" id="senderCif" name="senderCif"
+                       class="field-input" placeholder="B12345678" />
+              </div>
+              <div class="field-group">
+                <label for="senderPhone" class="field-label">Teléfono</label>
+                <input type="tel" id="senderPhone" name="senderPhone"
+                       class="field-input" placeholder="+34 600 000 000" />
+              </div>
+            </div>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="senderEmail" class="field-label">Email</label>
+                <input type="email" id="senderEmail" name="senderEmail"
+                       class="field-input" placeholder="info@miempresa.com" />
+              </div>
+              <div class="field-group">
+                <label for="senderWeb" class="field-label">Web</label>
+                <input type="text" id="senderWeb" name="senderWeb"
+                       class="field-input" placeholder="www.miempresa.com" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="senderAddress" class="field-label">Dirección</label>
+                <input type="text" id="senderAddress" name="senderAddress"
+                       class="field-input"
+                       placeholder="Calle Ejemplo, 1, 28001 Madrid" />
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DATOS DEL CLIENTE ─────────────────────────── -->
+          <div class="panel-section">
+            <h2 class="section-title">
+              <span class="section-icon">👤</span>
+              Datos del Cliente
+            </h2>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="clientName" class="field-label">Nombre / Empresa
+                  <span class="required">*</span></label>
+                <input type="text" id="clientName" name="clientName"
+                       class="field-input" placeholder="Cliente S.A."
+                       required />
+                <span class="field-error" id="err-clientName"></span>
+              </div>
+            </div>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="clientEmail" class="field-label">Email <span
+                        class="required">*</span></label>
+                <input type="email" id="clientEmail" name="clientEmail"
+                       class="field-input" placeholder="cliente@email.com"
+                       required />
+                <span class="field-error" id="err-clientEmail"></span>
+              </div>
+              <div class="field-group">
+                <label for="clientPhone" class="field-label">Teléfono</label>
+                <input type="tel" id="clientPhone" name="clientPhone"
+                       class="field-input" placeholder="+34 600 000 000" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="clientAddress" class="field-label">Dirección <span
+                        class="required">*</span></label>
+                <input type="text" id="clientAddress" name="clientAddress"
+                       class="field-input"
+                       placeholder="Calle Cliente, 5, 08001 Barcelona"
+                       required />
+                <span class="field-error" id="err-clientAddress"></span>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="clientCif" class="field-label">CIF / NIF</label>
+                <input type="text" id="clientCif" name="clientCif"
+                       class="field-input" placeholder="A87654321" />
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PRODUCTOS ─────────────────────────────────── -->
+          <div class="panel-section">
+            <h2 class="section-title">
+              <span class="section-icon">📦</span>
+              Productos / Servicios
+            </h2>
+
+            <!-- Header row (desktop) -->
+            <div class="products-header" aria-hidden="true">
+              <span>Descripción</span>
+              <span>Cant.</span>
+              <span>P. Unit.</span>
+              <span>Descuento</span>
+              <span>Total</span>
+              <span></span>
+            </div>
+
+            <div id="productsContainer" class="products-container">
+              <!-- Rows injected by JS -->
+            </div>
+
+            <button type="button" id="addProductBtn"
+                    class="btn btn-ghost btn-add-product">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+              Añadir producto
+            </button>
+          </div>
+
+          <!-- ── IMPUESTOS Y NOTAS ──────────────────────────── -->
+          <div class="panel-section">
+            <h2 class="section-title">
+              <span class="section-icon">⚙️</span>
+              Configuración & Notas
+            </h2>
+            <div class="field-row two-cols">
+              <div class="field-group">
+                <label for="taxRate" class="field-label">
+                  IVA / Impuesto (%)
+                  <span class="tax-badge" id="taxBadge">21%</span>
+                </label>
+                <div class="slider-wrapper">
+                  <input type="range" id="taxRate" name="taxRate"
+                         class="field-slider" min="0" max="30" step="0.5"
+                         value="21" />
+                  <div class="slider-marks">
+                    <span>0%</span><span>10%</span><span>21%</span><span>30%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="field-group">
+                <label for="discount" class="field-label">Descuento Global
+                  (%)</label>
+                <input type="number" id="discount" name="discount"
+                       class="field-input" min="0" max="100" step="0.5"
+                       value="0" placeholder="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="notes" class="field-label">Notas / Condiciones de
+                  pago</label>
+                <textarea id="notes" name="notes"
+                          class="field-input field-textarea" rows="3"
+                          placeholder="Ej: Pago en 30 días. Cuenta bancaria: ES00 0000 0000 0000 0000 0000"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── BOTONES ────────────────────────────────────── -->
+          <div class="form-actions">
+            <button type="button" id="clearBtn" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6l-1 14H6L5 6M8 6V4h8v2" />
+              </svg>
+              Limpiar
+            </button>
+            <button type="button" id="previewBtn" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Vista Previa
+            </button>
+            <button type="submit" id="generateBtn" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              Imprimir / Guardar PDF
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- RIGHT: PREVIEW + SUMMARY PANEL -->
+      <aside class="panel summary-panel" aria-label="Resumen y vista previa">
+
+        <!-- Totals Summary -->
+        <div class="summary-card">
+          <h3 class="summary-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            Resumen de la Factura
+          </h3>
+
+          <div class="summary-number" id="previewInvoiceNumber">—</div>
+          <div class="summary-date" id="previewDate">—</div>
+
+          <div class="summary-client" id="previewClient">
+            <span>Cliente</span>
+            <strong>—</strong>
+          </div>
+
+          <div class="totals-block">
+            <div class="totals-row">
+              <span>Subtotal</span>
+              <span id="summarySubtotal">0,00 €</span>
+            </div>
+            <div class="totals-row discount-row" id="discountRow"
+                 style="display:none">
+              <span>Descuento global</span>
+              <span id="summaryDiscount">0,00 €</span>
+            </div>
+            <div class="totals-row">
+              <span id="taxLabel">IVA (21%)</span>
+              <span id="summaryTax">0,00 €</span>
+            </div>
+            <div class="totals-row total-final">
+              <span>TOTAL</span>
+              <span id="summaryTotal">0,00 €</span>
+            </div>
+          </div>
+
+          <div class="summary-items-preview" id="summaryItemsPreview">
+            <p class="empty-hint">Añade productos para ver el resumen →</p>
+          </div>
+        </div>
+
+        <!-- PDF Preview placeholder -->
+        <div class="preview-card" id="pdfPreviewCard">
+          <div class="preview-placeholder" id="previewPlaceholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" opacity=".35">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <p>La vista previa del PDF aparecerá aquí</p>
+            <span>Pulsa "Vista Previa" para visualizar antes de descargar</span>
+          </div>
+          <iframe id="pdfIframe" class="pdf-iframe" style="display:none"
+                  title="Vista previa del PDF"></iframe>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- ─── TOAST NOTIFICATIONS ─────────────────────────────────── -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- ─── LOADING OVERLAY ──────────────────────────────────────── -->
+  <div id="loadingOverlay" class="loading-overlay" style="display:none"
+       aria-hidden="true">
+    <div class="loading-spinner"></div>
+    <p>Generando PDF…</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

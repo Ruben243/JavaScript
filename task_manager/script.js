@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- State Management ---
+/**
+ * Carga las tareas desde el almacenamiento local (localStorage).
+ * Si no hay datos previos o el formato es inválido, inicializa el estado como vacío.
+ */
 function loadTasks() {
     const saved = localStorage.getItem('nexus_tasks');
     if (saved) {
@@ -49,12 +53,18 @@ function loadTasks() {
     }
 }
 
+/**
+ * Guarda el estado actual de las tareas en localStorage y actualiza los contadores visuales.
+ */
 function saveTasks() {
     localStorage.setItem('nexus_tasks', JSON.stringify(tasks));
     updateCounts();
 }
 
 // --- Rendering ---
+/**
+ * Limpia las listas del DOM y renderiza cada tarea en su columna correspondiente.
+ */
 function renderBoard() {
     // Clear lists
     Object.values(lists).forEach(list => list.innerHTML = '');
@@ -85,6 +95,11 @@ function updateCounts() {
     document.querySelector('#col-done .task-count').textContent = counts.done;
 }
 
+/**
+ * Crea el elemento DOM de una tarjeta de tarea con sus eventos de drag y click.
+ * @param {Object} task - Objeto con los datos de la tarea (id, title, description, status).
+ * @returns {HTMLElement} El nodo de la tarjeta de tarea.
+ */
 function createTaskCard(task) {
     const div = document.createElement('div');
     div.className = 'task-card';
@@ -210,15 +225,24 @@ function setupEventListeners() {
     taskForm.addEventListener('submit', handleFormSubmit);
     btnDeleteTask.addEventListener('click', handleDeleteTask);
     
-    btnClearBoard.addEventListener('click', () => {
-        if (confirm('¿Estás seguro de que quieres limpiar todo el tablero? Esta acción no se puede deshacer.')) {
-            tasks = [];
-            saveTasks();
-            renderBoard();
-        }
-    });
+    btnClearBoard.addEventListener('click', handleClearBoard);
 }
 
+/**
+ * Limpia todas las tareas del tablero tras la confirmación del usuario.
+ */
+function handleClearBoard() {
+    if (confirm('¿Estás seguro de que quieres limpiar todo el tablero? Esta acción no se puede deshacer.')) {
+        tasks = [];
+        saveTasks();
+        renderBoard();
+    }
+}
+
+/**
+ * Abre el modal para crear una nueva tarea o editar una existente.
+ * @param {Object|null} task - Tarea a editar. Si es null, el modal se abre en modo creación.
+ */
 function openModal(task = null) {
     taskForm.reset();
     
@@ -246,6 +270,11 @@ function closeModal() {
     modal.classList.remove('show');
 }
 
+/**
+ * Procesa el envío del formulario de tareas.
+ * Crea una nueva tarea o actualiza la existente basándose en el ID del input oculto.
+ * @param {Event} e - Evento de submit.
+ */
 function handleFormSubmit(e) {
     e.preventDefault();
     
@@ -279,6 +308,9 @@ function handleFormSubmit(e) {
     closeModal();
 }
 
+/**
+ * Elimina la tarea cargada actualmente en el modal tras confirmar la acción.
+ */
 function handleDeleteTask() {
     const id = inputId.value;
     if (id) {
@@ -289,4 +321,19 @@ function handleDeleteTask() {
             closeModal();
         }
     }
+}
+
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        getTasks: () => tasks,
+        setTasks: (newTasks) => { tasks = newTasks; },
+        loadTasks,
+        saveTasks,
+        renderBoard,
+        handleFormSubmit,
+        handleDeleteTask,
+        handleClearBoard,
+        setupEventListeners
+    };
 }
